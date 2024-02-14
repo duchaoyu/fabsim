@@ -16,8 +16,9 @@ ElasticMembrane<Element>::ElasticMembrane(const Eigen::Ref<const Mat3<double>> V
                                           double thickness,
                                           double young_modulus,
                                           double poisson_ratio,
-                                          double mass)
-    : ElasticMembrane(V, F, std::vector<double>(F.rows(), thickness), young_modulus, poisson_ratio, mass)
+                                          double mass,
+                                          double pressure)
+    : ElasticMembrane(V, F, std::vector<double>(F.rows(), thickness), young_modulus, poisson_ratio, mass, pressure)
 {
   _thickness = thickness;
 }
@@ -28,8 +29,9 @@ ElasticMembrane<Element>::ElasticMembrane(const Eigen::Ref<const Mat3<double>> V
                                           const std::vector<double> &thicknesses,
                                           double young_modulus,
                                           double poisson_ratio,
-                                          double mass)
-    : _E(young_modulus), _nu(poisson_ratio), _mass(mass)
+                                          double mass,
+                                          double pressure)
+    : _E(young_modulus), _nu(poisson_ratio), _mass(mass), _pressure(pressure)
 {
   using namespace Eigen;
 
@@ -40,14 +42,17 @@ ElasticMembrane<Element>::ElasticMembrane(const Eigen::Ref<const Mat3<double>> V
 
   int nF = F.rows();
   this->_elements.reserve(nF);
-  for(int i = 0; i < nF; ++i)
+  for (int i = 0; i < nF; ++i) {
     this->_elements.emplace_back(V, F.row(i), thicknesses[i]);
+    this->_elements[i].addPressure(pressure);
+  }
 }
 
 template <class Element>
 double ElasticMembrane<Element>::energy(const Eigen::Ref<const Eigen::VectorXd> X) const
 {
-  return ModelBase<Element>::energy(X, _lambda, _mu, _mass);
+  double totale = ModelBase<Element>::energy(X, _lambda, _mu, _mass);
+  return totale;
 }
 
 template <>
@@ -107,12 +112,22 @@ ElasticMembrane<IncompressibleNeoHookeanElement>::hessianTriplets(const Eigen::R
 }
 
 template <class Element>
-void ElasticMembrane<Element>::setPoissonRatio(double poisson_ratio)
+void ElasticMembrane<Element>::setPressure(double pressure)
 {
-  _nu = poisson_ratio;
-  _lambda = _E * _nu / (1 - std::pow(_nu, 2));
-  _mu = 0.5 * _E / (1 + _nu);
+  _pressure = pressure;
+  for (Element& e: this->_elements) {
+    e.addPressure(pressure);
+  }
 }
+
+    template <class Element>
+    void ElasticMembrane<Element>::setPoissonRatio(double poisson_ratio)
+    {
+      _nu = poisson_ratio;
+      _lambda = _E * _nu / (1 - std::pow(_nu, 2));
+      _mu = 0.5 * _E / (1 + _nu);
+    }
+
 
 template <class Element>
 void ElasticMembrane<Element>::setYoungModulus(double young_modulus)

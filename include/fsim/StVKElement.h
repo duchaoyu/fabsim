@@ -58,6 +58,7 @@ public:
   static void setParameters(double young_modulus, double poisson_ratio);
 
   double coeff;
+  double area;
   Eigen::Matrix<double, 2, 2> _R;
 };
 

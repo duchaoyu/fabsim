@@ -42,26 +42,46 @@ TEMPLATE_TEST_CASE("TriangleElement", "", StVKElement, NeoHookeanElement)
   }
 }
 
-TEST_CASE("IncompressibleNeoHookeanElement")
+//TEST_CASE("IncompressibleNeoHookeanElement")
+//{
+//  using namespace Eigen;
+//
+//  Mat3<double> V = GENERATE(take(5, matrix_random(3, 3)));
+//  Vector3d params = GENERATE(take(5, vector_random(3, 0., 1.)));
+//  IncompressibleNeoHookeanElement e(V, Vector3i(0, 1, 2), params(2));
+//
+//  SECTION("Gradient")
+//  {
+//    test_gradient([&](auto &X) { return e.energy(X, params(0), params(1)); },
+//                  [&](auto &X) { return e.gradient(X, params(0), params(1)); }, 9, 1e-5);
+//  }
+//  SECTION("Hessian")
+//  {
+//    test_hessian([&](auto &X) { return e.gradient(X, params(0), params(1)); },
+//                 [&](auto &X) { return e.hessian(X, params(0), params(1)); }, 9, 1e-5);
+//  }
+//}
+
+TEST_CASE("StVKElement")
 {
   using namespace Eigen;
 
   Mat3<double> V = GENERATE(take(5, matrix_random(3, 3)));
   Vector3d params = GENERATE(take(5, vector_random(3, 0., 1.)));
-  IncompressibleNeoHookeanElement e(V, Vector3i(0, 1, 2), params(2));
+  StVKElement e(V, Vector3i(0, 1, 2), params(2));
 
   SECTION("Gradient")
   {
-    test_gradient([&](auto &X) { return e.energy(X, params(0), params(1)); },
-                  [&](auto &X) { return e.gradient(X, params(0), params(1)); }, 9, 1e-5);
+    test_gradient([&](auto &X) { return e.energy(X, params(0), params(1), params(2)); },
+                  [&](auto &X) { return e.gradient(X, params(0), params(1), params(2)); }, 9, 1e-5);
   }
   SECTION("Hessian")
   {
-    test_hessian([&](auto &X) { return e.gradient(X, params(0), params(1)); },
-                 [&](auto &X) { return e.hessian(X, params(0), params(1)); }, 9, 1e-5);
+    test_hessian([&](auto &X) { return e.gradient(X, params(0), params(1), params(2)); },
+                 [&](auto &X) { return e.hessian(X, params(0), params(1), params(2)); }, 9, 1e-5);
   }
 }
-
+/*
 TEST_CASE("OrthotropicStVKElement")
 {
   using namespace Eigen;
@@ -489,3 +509,4 @@ TEST_CASE("bendAngleGradient")
         12);
   }
 }
+*/

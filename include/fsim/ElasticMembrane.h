@@ -29,20 +29,23 @@ public:
    * @param poisson_ratio  membrane's Poisson's ratio
    * @param thickness  membrane's thickness
    * @param mass  membrane's mass (defaults to 0 to disable gravity)
+   * @para pressure
    */
   ElasticMembrane(const Eigen::Ref<const Mat3<double>> V,
                   const Eigen::Ref<const Mat3<int>> F,
                   double thickness,
                   double young_modulus,
                   double poisson_ratio,
-                  double mass = 0);
+                  double mass = 0,
+                  double pressure=0);
 
   ElasticMembrane(const Eigen::Ref<const Mat3<double>> V,
                   const Eigen::Ref<const Mat3<int>> F,
                   const std::vector<double> &thicknesses,
                   double young_modulus,
                   double poisson_ratio,
-                  double mass = 0);
+                  double mass = 0,
+                  double pressure=0);
 
   /**
    * energy function of this material model   f : \R^n -> \R
@@ -81,6 +84,10 @@ public:
   void setPoissonRatio(double poisson_ratio);
   double getPoissonRatio() const { return _nu; }
 
+  // set pressure
+  void setPressure(double pressure);
+  double getPressure() const { return _pressure; }
+
   // set Young's modulus (positive coefficient)
   void setYoungModulus(double E);
   double getYoungModulus() const { return _E; }
@@ -100,6 +107,8 @@ private:
   double _lambda;
   double _mu;
   double _mass;
+  double _pressure;
+
   double _thickness = -1;
 };
 

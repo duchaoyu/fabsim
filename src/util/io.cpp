@@ -215,6 +215,24 @@ void readROD(const std::string &file, std::vector<std::vector<int>> &rod_indices
 }
 
 /**
+ * Read OBJ file and store vertex and face information into V and F
+ * @param file  path to file where V and F information is stored
+ * @return V  nV by 3 matrix of vertices
+ * @return F  nF by 3 matrix of face indices
+ */
+void readOBJ(const std::string &file, Mat3<double> &V, Mat3<int> &F)
+{
+  std::ifstream mesh_stream(file);
+  if(!mesh_stream.is_open())
+  {
+    std::cerr << "IOError: could not open " << file << std::endl;
+    return;
+  }
+
+  //
+}
+
+/**
  * save vertex and face information in OFF format
  * @param file  path to .off file where V and F information will be stored
  * @return V  nV by 3 matrix of vertices

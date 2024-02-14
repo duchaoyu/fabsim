@@ -34,6 +34,14 @@ public:
 
   constexpr int nbDOFs() const { return NB_DOFS; }
   constexpr int nbVertices() const { return NB_VERTICES; }
+
+  void addPressure(double forcePerUnitArea_) {
+    add_pressure = true;
+    forcePerUnitArea = forcePerUnitArea_;
+  }
+protected:
+    bool add_pressure = false;
+    double forcePerUnitArea = 0;
 };
 
 } // namespace fsim

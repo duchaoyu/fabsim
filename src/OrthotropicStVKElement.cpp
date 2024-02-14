@@ -15,7 +15,7 @@ OrthotropicStVKElement::OrthotropicStVKElement(const Eigen::Ref<const Mat2<doubl
   using namespace Eigen;
 
   idx = E;
-
+  // _R is the initial length
   _R << V(E(1), 1) - V(E(2), 1), V(E(1), 0) - V(E(2), 0), 
         V(E(2), 1) - V(E(0), 1), V(E(2), 0) - V(E(0), 0),
         V(E(0), 1) - V(E(1), 1), V(E(0), 0) - V(E(1), 0);

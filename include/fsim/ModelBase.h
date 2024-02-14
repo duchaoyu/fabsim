@@ -11,6 +11,7 @@
 #include <Eigen/SparseCore>
 
 #include <vector>
+#include <iostream>
 
 namespace fsim
 {
@@ -88,8 +89,11 @@ void ModelBase<Element>::gradient(const Eigen::Ref<const Eigen::VectorXd> X,
     auto grad = element.gradient(X, args...);
 
     int nV = element.nbVertices();
-    for(int j = 0; j < nV; ++j)
+    for(int j = 0; j < nV; ++j) {
+//      std::cout<<3*element.idx(j)<<" "<<3*j<<std::endl;
       Y.segment<3>(3 * element.idx(j)) += grad.template segment<3>(3 * j);
+
+    }
 
     for(int j = 0; j < element.idx.size() - nV; ++j)
       Y(element.idx(nV + j)) += grad(3 * nV + j);

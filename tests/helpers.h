@@ -198,7 +198,7 @@ void test_gradient(
   REQUIRE(diff.norm() / gradient_numerical.norm() == Approx(0.0).margin(eps));
 }
 
-template <class Element>
+template <class Ele ment>
 void test_gradient(
     const Element &e,
     double eps = 1e-6,
