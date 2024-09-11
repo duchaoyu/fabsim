@@ -27,6 +27,17 @@ Eigen::Vector3d Spring::force(const Eigen::Ref<const Eigen::VectorXd> pos) const
   return -(u - v) * (1 - r);
 }
 
+
+//void Spring::gradient(const Eigen::Ref<const Eigen::VectorXd> X, Eigen::Ref<Eigen::VectorXd> Y) const
+//  {
+//    using namespace Eigen;
+//
+//    Vector3d u = X.segment<3>(3 * i);
+//    Vector3d v = X.segment<3>(3 * j);
+//    double r = rest_length / (u - v).norm();
+//    return -(u - v) * (1 - r);
+//  }
+
 Eigen::Matrix3d Spring::hessian(const Eigen::Ref<const Eigen::VectorXd> pos) const
 {
   using namespace Eigen;

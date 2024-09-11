@@ -93,9 +93,6 @@ StVKElement::gradient(const Eigen::Ref<const Eigen::VectorXd> X, double lambda, 
   grad.segment<3>(3) = H.col(1);
   grad.segment<3>(6) = -H.col(0) - H.col(1);
 
-//  grad(2) += 9.8 * coeff / 3 * mass;
-//  grad(5) += 9.8 * coeff / 3 * mass;
-//  grad(8) += 9.8 * coeff / 3 * mass;
   grad(2) += 9.8 * area / 3 * mass;
   grad(5) += 9.8 * area / 3 * mass;
   grad(8) += 9.8 * area / 3 * mass;

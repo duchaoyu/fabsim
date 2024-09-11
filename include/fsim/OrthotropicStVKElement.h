@@ -16,16 +16,25 @@ class OrthotropicStVKElement : public ElementBase<3>
 public:
   /**
    * Constructor for the OrthotropicStVKElement class
-   * @param V  n by 2 list of vertex positions (each row is a vertex)
+   * @param V  n by 3 list of vertex positions (each row is a vertex)
    * @param face  list of 3 indices, one per vertex of the triangle
    */
-  OrthotropicStVKElement(const Eigen::Ref<const Mat2<double>> V, const Eigen::Vector3i &face, double thickness);
+  OrthotropicStVKElement(const Eigen::Ref<const Mat3<double>> V, const Eigen::Vector3i &face, double thickness);
 
   /**
    * @param X  a flat vector stacking all degrees of freedom
    * @return  energy of the triangle element for a given material model
    */
   double energy(const Eigen::Ref<const Eigen::VectorXd> X, const Eigen::Matrix3d &_C, double mass) const;
+
+  Eigen::MatrixXd local_xy(const Eigen::Ref<const Mat3<double>> V) const;
+
+  Eigen::MatrixXd local_XY(const Eigen::Ref<const Eigen::VectorXd> X) const;
+    /**
+   * @param V n by 3 list of vertex positions (each row is a vertex)
+   * @param X a flat vector stacking all degrees of freedom
+   * @return
+    */
 
   /**
    * @param X  a flat vector stacking all degrees of freedom
@@ -57,6 +66,9 @@ public:
 
   double coeff;
   Eigen::Matrix<double, 3, 2> _R;
+  double area;
+  Eigen::Matrix4d T_mul;
+// Eigen::Matrix<double, 2, 2> _R;
 };
 
 } // namespace fsim

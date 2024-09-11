@@ -29,7 +29,7 @@ public:
    * @param poisson_ratio  membrane's Poisson's ratio
    * @param thickness  membrane's thickness
    * @param mass  membrane's mass (defaults to 0 to disable gravity)
-   * @para pressure
+   * @param pressure pressure inside the membrane
    */
   ElasticMembrane(const Eigen::Ref<const Mat3<double>> V,
                   const Eigen::Ref<const Mat3<int>> F,

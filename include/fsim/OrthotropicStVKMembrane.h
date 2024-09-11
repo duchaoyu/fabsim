@@ -24,24 +24,27 @@ public:
    * @param thicknesses  membrane's thickness (per-triangle value)
    * @param E1  0 degree Young's modulus
    * @param E2  90 degrees Young's modulus
-   * @param poisson_ratio  membrane's Poisson's ratio
+   * @param poisson_ratio  membrane's Poisson's ratio, nu12
    * @param mass  membrane's mass (defaults to 0 to disable gravity)
+   * @param pressure pressure inside the membrane
    */
-  OrthotropicStVKMembrane(const Eigen::Ref<const Mat2<double>> V,
+  OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<double>> V,
                           const Eigen::Ref<const Mat3<int>> F,
                           double thickness,
                           double E1,
                           double E2,
                           double poisson_ratio,
-                          double mass = 0);
+                          double mass = 0,
+                          double pressure = 0);
 
-  OrthotropicStVKMembrane(const Eigen::Ref<const Mat2<double>> V,
+  OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<double>> V,
                           const Eigen::Ref<const Mat3<int>> F,
                           const std::vector<double> &thicknesses,
                           double E1,
                           double E2,
                           double poisson_ratio,
-                          double mass = 0);
+                          double mass = 0,
+                          double pressure = 0);
 
   /**
    * energy function of this material model   f : \R^n -> \R
@@ -80,9 +83,22 @@ public:
   void setPoissonRatio(double poisson_ratio);
   double getPoissonRatio() const { return _poisson_ratio; }
 
+  void setPressure(double pressure);
+  double getPressure() const { return _pressure; }
+
   // set Young's moduli (E1 and E2 respectively control the horizontal and vertical stiffness)
-  void setYoungModuli(double E1, double E2);
-  std::array<double, 2> getYoungModuli() const { return {_E1, _E2}; }
+
+  void setE1 (double E1);
+  double getE1() const { return _E1; }
+
+  void setE2 (double E2);
+  double getE2() const {return _E2; }
+
+  double getNu12() const {return _nu12; }
+  double getNu21() const {return _nu21; }
+
+//  void setYoungModuli(double E1, double E2);
+//  std::array<double, 2> getYoungModuli() const { return {_E1, _E2}; }
 
   // set thickness of the membrane (controls the amount of stretching and the total weight)
   // negative values are not allowed
@@ -92,13 +108,20 @@ public:
   void setMass(double mass);
   double getMass() const { return _mass; }
 
+
 private:
   int nV;
+
   double _thickness = -1;
   double _poisson_ratio;
   double _E1;
   double _E2;
   double _mass;
+  double _nu12;
+  double _nu21;
+  double _G12; // shear modulus
+
+  double _pressure;
 };
 
 } // namespace fsim
