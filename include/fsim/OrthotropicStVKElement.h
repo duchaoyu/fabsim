@@ -68,6 +68,7 @@ public:
   Eigen::Matrix<double, 3, 2> _R;
   double area;
   Eigen::Matrix4d T_mul;
+  Eigen::Matrix4d T;
 // Eigen::Matrix<double, 2, 2> _R;
 };
 

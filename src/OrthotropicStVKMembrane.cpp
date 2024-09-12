@@ -50,7 +50,7 @@ OrthotropicStVKMembrane::OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<dou
   this->_elements.reserve(nF);
   for(int i = 0; i < nF; ++i) {
     this->_elements.emplace_back(V, F.row(i), thicknesses[i]);
-    if(pressure > 0){this->_elements[i].addPressure(pressure);}
+    if(pressure > 0.1){this->_elements[i].addPressure(pressure);}
   }
 }
 

@@ -50,7 +50,7 @@ OrthotropicStVKElement::OrthotropicStVKElement(const Eigen::Ref<const Mat3<doubl
   R.col(1) << yaxis;
   R.col(2) << zaxis;
 
-  Matrix4d T = Matrix4d::Identity();
+  T = Matrix4d::Identity();
   T.block<3, 3>(0, 0) = R;
   T.block<3, 1>(0, 3) = origin;
   Matrix4d T_inverse = T.inverse();
@@ -69,6 +69,7 @@ OrthotropicStVKElement::OrthotropicStVKElement(const Eigen::Ref<const Mat3<doubl
 
   _R /= d;
   coeff = thickness / 2 * std::abs(d);
+  area = 1.0 / 2 * std::abs(d);
 
 
 
@@ -160,7 +161,7 @@ Eigen::MatrixXd OrthotropicStVKElement::local_XY(const Eigen::Ref<const Eigen::V
     }
 
     return coeff *
-           (0.5 * S_E.dot(_C * S_E) + 9.8 * mass * (X(3 * idx(0) + 2) + X(3 * idx(1) + 2) + X(3 * idx(2) + 2)) / 3);
+           (0.5 * S_E.dot(_C * S_E)) + area * 9.8 * mass * (X(3 * idx(0) + 2) + X(3 * idx(1) + 2) + X(3 * idx(2) + 2)) / 3;
   }
 
   Vec<double, 9>
@@ -175,11 +176,24 @@ Eigen::MatrixXd OrthotropicStVKElement::local_XY(const Eigen::Ref<const Eigen::V
     P.col(1) << V_local_XY.row(1)[0], V_local_XY.row(1)[1], V_local_XY.row(1)[2];
     P.col(2) << V_local_XY.row(2)[0], V_local_XY.row(2)[1], V_local_XY.row(2)[2];
 
-    Matrix<double, 3, 2> F = P * _R;
+    Matrix<double, 3, 2> F = P * _R; // deformation gradient
 
-    Matrix3d grad = coeff * F * (SMat * _R.transpose());
-    grad.row(2) += Vector3d::Constant(9.8 * coeff / 3 * mass);
-    Vec<double, 9> grad_flat = Map<Vec<double, 9>>(grad.data(), 9);
+    Matrix3d grad = coeff * F * (SMat * _R.transpose()); // elastic energy gradient in the local frame
+
+    Matrix4d T_mul_local_global = Matrix4d::Identity().inverse() * T;
+    Matrix3d grad_33_world;
+
+    for (int i = 0; i < 3; ++i) {
+      // Convert each 3D point to homogeneous coordinates (Vector4d)
+      Matrix<double, 1, 4> grad14;
+      grad14 << grad.row(i)[0], grad.row(i)[1], grad.row(i)[2], 1.0;
+      Matrix<double, 1, 4>  grad14_xy = grad14 * T_mul_local_global.transpose();
+      grad_33_world.row(i) << grad14_xy.head<3>();
+    }
+
+
+    grad_33_world.row(2) += Vector3d::Constant(9.8 * area / 3 * mass); // gravity gradient
+    Vec<double, 9> grad_flat = Map<Vec<double, 9>>(grad_33_world.data(), 9);
 
     if (add_pressure) {
       Eigen::Vector<double, 9> pressureGrad;
