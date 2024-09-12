@@ -56,7 +56,9 @@ double StVKElement::energy(const Eigen::Ref<const Eigen::VectorXd> X, double lam
         Vector3d e2 = X.segment<3>(3 * idx(1)) - X.segment<3>(3 * idx(2));
         Vector3d normal = e1.cross(e2);
 
-        Vector3d totalDisplacement = X.segment<3>(0) + X.segment<3>(3) + X.segment<3>(6);
+        Vector3d totalDisplacement = X.segment<3>(3 * idx(0)) + X.segment<3>(3 * idx(1)) + X.segment<3>(3 * idx(2));
+
+//    Vector3d totalDisplacement = X.segment<3>(0) + X.segment<3>(3) + X.segment<3>(6);
         double avgNormalDisplacementArea = totalDisplacement.dot(normal) / 6;
 
         // Work done by the perpendicular force, work = F * displacement
