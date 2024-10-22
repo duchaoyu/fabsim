@@ -21,8 +21,9 @@ OrthotropicStVKMembrane::OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<dou
                                                      double E2,
                                                      double poisson_ratio,
                                                      double mass,
-                                                     double pressure)
-    : OrthotropicStVKMembrane(V, F, std::vector<double>(F.rows(), thickness), E1, E2, poisson_ratio, mass, pressure)
+                                                     double pressure,
+                                                     const std::vector<Eigen::Vector3d>& face_vectors)
+    : OrthotropicStVKMembrane(V, F, std::vector<double>(F.rows(), thickness), E1, E2, poisson_ratio, mass, pressure, face_vectors)
 {
   _thickness = thickness;
   // TODO: local frame, e1, e2
@@ -35,8 +36,16 @@ OrthotropicStVKMembrane::OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<dou
                                                      double E2,
                                                      double poisson_ratio,
                                                      double mass,
-                                                     double pressure)
-    : _poisson_ratio{poisson_ratio}, _E1{E1}, _E2{E2}, _mass{mass}, _nu12{poisson_ratio}, _nu21{poisson_ratio*E2/E1}, _pressure{pressure}
+                                                     double pressure,
+                                                     const std::vector<Eigen::Vector3d>& face_vectors)
+    : _poisson_ratio{poisson_ratio},
+    _E1{E1},
+    _E2{E2},
+    _mass{mass},
+    _nu12{poisson_ratio},
+    _nu21{poisson_ratio*E2/E1},
+    _pressure{pressure},
+    _face_vectors(face_vectors)
 {
   using namespace Eigen;
 
@@ -47,9 +56,24 @@ OrthotropicStVKMembrane::OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<dou
 
 
   int nF = F.rows();
+
+  // Ensure that the face_vectors size matches the number of faces
+  if (!_face_vectors.empty() && _face_vectors.size() != static_cast<size_t>(nF))
+  {
+    throw std::invalid_argument("Size of face_vectors must match the number of faces in F.");
+  }
+
+
   this->_elements.reserve(nF);
   for(int i = 0; i < nF; ++i) {
     this->_elements.emplace_back(V, F.row(i), thicknesses[i]);
+
+    // If face_vectors are provided, set them in the element
+    if (!_face_vectors.empty())
+    {
+      this->_elements[i].addFaceVector(_face_vectors[i]);
+    }
+
     if(pressure > 0.1){this->_elements[i].addPressure(pressure);}
   }
 }

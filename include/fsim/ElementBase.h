@@ -39,9 +39,16 @@ public:
     add_pressure = true;
     forcePerUnitArea = forcePerUnitArea_;
   }
+
+  void addFaceVector(const Eigen::Vector3d& face_vector_){
+    face_vector = face_vector_.normalized();
+  }
+
 protected:
     bool add_pressure = false;
     double forcePerUnitArea = 0;
+    Eigen::Vector3d face_vector;
+
 };
 
 } // namespace fsim

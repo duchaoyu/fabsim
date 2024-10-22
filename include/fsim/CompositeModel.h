@@ -7,7 +7,8 @@
 
 #include "ModelBase.h"
 #include "util/typedefs.h"
-
+#include "Spring.h"
+#include <fsim/ElasticMembrane.h>
 #include <tuple>
 #include <utility>
 
@@ -24,7 +25,11 @@ class CompositeModel
 public:
   CompositeModel(Types &&...args) : _models(std::forward<Types>(args)...) {}
 
-  /**
+  CompositeModel(std::vector<fsim::Spring> models, int i) {
+
+  }
+
+    /**
    * energy function of this material model   f : \R^n -> \R
    * @param X  a flat vector stacking all degrees of freedom
    * @return  the energy of this model evaluated at X

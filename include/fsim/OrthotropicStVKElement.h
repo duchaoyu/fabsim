@@ -25,6 +25,8 @@ public:
    * @param X  a flat vector stacking all degrees of freedom
    * @return  energy of the triangle element for a given material model
    */
+
+
   double energy(const Eigen::Ref<const Eigen::VectorXd> X, const Eigen::Matrix3d &_C, double mass) const;
 
   Eigen::MatrixXd local_xy(const Eigen::Ref<const Mat3<double>> V) const;

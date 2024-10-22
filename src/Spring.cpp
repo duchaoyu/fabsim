@@ -4,6 +4,9 @@
 // Created: 04/10/18
 
 #include <fsim/Spring.h>
+#include <Eigen/Dense>
+#include <Eigen/SparseCore>
+
 
 namespace fsim
 {
@@ -28,15 +31,15 @@ Eigen::Vector3d Spring::force(const Eigen::Ref<const Eigen::VectorXd> pos) const
 }
 
 
-//void Spring::gradient(const Eigen::Ref<const Eigen::VectorXd> X, Eigen::Ref<Eigen::VectorXd> Y) const
-//  {
-//    using namespace Eigen;
-//
-//    Vector3d u = X.segment<3>(3 * i);
-//    Vector3d v = X.segment<3>(3 * j);
-//    double r = rest_length / (u - v).norm();
-//    return -(u - v) * (1 - r);
-//  }
+Eigen::Vector3d  Spring::gradient(const Eigen::Ref<const Eigen::VectorXd> X, Eigen::Ref<Eigen::VectorXd> Y) const
+  {
+    using namespace Eigen;
+
+    Vector3d u = X.segment<3>(3 * i);
+    Vector3d v = X.segment<3>(3 * j);
+    double r = rest_length / (u - v).norm();
+    return -(u - v) * (1 - r);
+  }
 
 Eigen::Matrix3d Spring::hessian(const Eigen::Ref<const Eigen::VectorXd> pos) const
 {
@@ -47,5 +50,8 @@ Eigen::Matrix3d Spring::hessian(const Eigen::Ref<const Eigen::VectorXd> pos) con
   double ratio = rest_length / (u - v).norm();
   return -((1 - ratio) * Matrix3d::Identity() + ratio / (u - v).squaredNorm() * (u - v) * (u - v).transpose());
 }
+
+    std::vector<Eigen::Triplet<double>> Spring::hessianTriplets(const Eigen::Ref<const Eigen::VectorXd> X) const {
+    }
 
 } // namespace fsim

@@ -27,6 +27,7 @@ public:
    * @param poisson_ratio  membrane's Poisson's ratio, nu12
    * @param mass  membrane's mass (defaults to 0 to disable gravity)
    * @param pressure pressure inside the membrane
+   * @param face_vecotrs the vector in each face that represents the direction of E1 in global direction
    */
   OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<double>> V,
                           const Eigen::Ref<const Mat3<int>> F,
@@ -35,7 +36,9 @@ public:
                           double E2,
                           double poisson_ratio,
                           double mass = 0,
-                          double pressure = 0);
+                          double pressure = 0,
+                          const std::vector<Eigen::Vector3d>& face_vectors = std::vector<Eigen::Vector3d>()
+                              );
 
   OrthotropicStVKMembrane(const Eigen::Ref<const Mat3<double>> V,
                           const Eigen::Ref<const Mat3<int>> F,
@@ -44,7 +47,9 @@ public:
                           double E2,
                           double poisson_ratio,
                           double mass = 0,
-                          double pressure = 0);
+                          double pressure = 0,
+                          const std::vector<Eigen::Vector3d>& face_vectors = std::vector<Eigen::Vector3d>()
+        );
 
   /**
    * energy function of this material model   f : \R^n -> \R
@@ -120,8 +125,9 @@ private:
   double _nu12;
   double _nu21;
   double _G12; // shear modulus
-
   double _pressure;
+  std::vector<Eigen::Vector3d> _face_vectors; // direciton of E1
+
 };
 
 } // namespace fsim
