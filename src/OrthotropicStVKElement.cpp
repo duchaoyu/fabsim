@@ -11,18 +11,33 @@ namespace fsim
 {
 
 OrthotropicStVKElement::OrthotropicStVKElement(const Eigen::Ref<const Mat3<double>> V,
-                                                   const Eigen::Vector3i &E,
-                                                   double thickness)
+                                               const Eigen::Vector3i &E,
+                                               double thickness,
+                                               double E1,
+                                               double E2,
+                                               double poisson_ratio,
+                                               const Eigen::Vector3d face_vector):
+    _E1(E1), _E2(E2), _poisson_ratio(poisson_ratio)
+
 {
   using namespace Eigen;
+
+  _nu21 = _poisson_ratio * _E2 / _E1;
+  _G12 = _E1 * _E2 / (_E1 + _E2 + 2 * _E2 * _poisson_ratio);
+  _C << _E1, _poisson_ratio * sqrt(_E1 * _E2), 0,
+      _poisson_ratio * sqrt(_E1 * _E2), _E2, 0,
+      0, 0, 0.5 * sqrt(_E1 * _E2) * (1 - _poisson_ratio);
+  _C /= (1 - std::pow(_poisson_ratio, 2));
+
+
   idx = E;
 
 
   // glocal to local frame
-  // TODO: this is simply for test now
+
   Vector3d xaxis;
-//  xaxis << 0.0, 1.0, 0.0;   // input from the vector field
-  xaxis = face_vector;
+  //  xaxis << 0.0, 1.0, 0.0;   // input from the vector field
+  xaxis << face_vector;
   xaxis.normalize();
 
   Vector3d e1 = V.row(idx(0)) - V.row(idx(2));

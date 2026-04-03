@@ -16,12 +16,16 @@ Spring::Spring(int _i, int _j, double length) : i(_i), j(_j), rest_length(length
 
 double Spring::energy(const Eigen::Ref<const Eigen::VectorXd> pos) const
 {
+
+  // Hooke's Law for linear springs: E = 0.5 * k * (x- x0)**2
+  // for simplicity, the stiffness k=1
   double diff = (pos.segment<3>(3 * i) - pos.segment<3>(3 * j)).norm() - rest_length;
   return pow(diff, 2) / 2.;
 }
 
 Eigen::Vector3d Spring::force(const Eigen::Ref<const Eigen::VectorXd> pos) const
 {
+  // F = -k(x-x0)
   using namespace Eigen;
 
   Vector3d u = pos.segment<3>(3 * i);

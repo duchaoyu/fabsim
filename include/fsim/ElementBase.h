@@ -11,6 +11,7 @@
 #include "fsim/util/typedefs.h"
 
 #include <Eigen/Dense>
+#include <iostream>
 
 namespace fsim
 {
@@ -40,14 +41,15 @@ public:
     forcePerUnitArea = forcePerUnitArea_;
   }
 
-  void addFaceVector(const Eigen::Vector3d& face_vector_){
-    face_vector = face_vector_.normalized();
-  }
+//  void addFaceVector(const Eigen::Vector3d& face_vector_){
+//    face_vector = face_vector_.normalized();
+//    std::cout << "face_vector model base" << face_vector << " ," << face_vector_ << std::endl;
+//  }
 
 protected:
     bool add_pressure = false;
     double forcePerUnitArea = 0;
-    Eigen::Vector3d face_vector;
+//    Eigen::Vector3d face_vector;
 
 };
 

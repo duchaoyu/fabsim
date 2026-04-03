@@ -19,7 +19,13 @@ public:
    * @param V  n by 3 list of vertex positions (each row is a vertex)
    * @param face  list of 3 indices, one per vertex of the triangle
    */
-  OrthotropicStVKElement(const Eigen::Ref<const Mat3<double>> V, const Eigen::Vector3i &face, double thickness);
+  OrthotropicStVKElement(const Eigen::Ref<const Mat3<double>> V,
+                         const Eigen::Vector3i &face,
+                         double thickness,
+                         double E1,
+                         double E2,
+                         double poisson_ratio,
+                         Eigen::Vector3d face_vector);
 
   /**
    * @param X  a flat vector stacking all degrees of freedom
@@ -66,11 +72,20 @@ public:
    */
   Eigen::Vector3d stress(const Eigen::Ref<const Eigen::VectorXd> X, const Eigen::Matrix3d &_C) const;
 
+
   double coeff;
   Eigen::Matrix<double, 3, 2> _R;
   double area;
   Eigen::Matrix4d T_mul;
   Eigen::Matrix4d T;
+
+  double _E1;              // Young's modulus in direction 1
+  double _E2;              // Young's modulus in direction 2
+  double _poisson_ratio;   // Poisson's ratio
+  double _nu21;            // Secondary Poisson's ratio
+  double _G12;             // Shear modulus
+  Eigen::Matrix3d _C;    // Compliance matrix specific to this element
+
 // Eigen::Matrix<double, 2, 2> _R;
 };
 
