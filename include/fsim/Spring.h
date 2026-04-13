@@ -15,8 +15,9 @@ struct Spring
 {
   int i, j;
   double rest_length;
+  double stiffness;  // spring stiffness k (N/m)
 
-  Spring(int _i, int _j, double length);
+  Spring(int _i, int _j, double length, double k = 1.0);
 
   double energy(const Eigen::Ref<const Eigen::VectorXd> pos) const;
   Eigen::Vector3d force(const Eigen::Ref<const Eigen::VectorXd> pos) const;
